@@ -13,6 +13,7 @@ specifiers:
   '@typescript-eslint/parser': 5.57.1
   '@vitejs/plugin-react': 3.1.0
   autoprefixer: 10.4.14
+  clsx: ^1.2.1
   conventional-changelog-conventionalcommits: 5.0.0
   eslint: 8.37.0
   eslint-plugin-react: 7.32.2
@@ -43,6 +44,7 @@ devDependencies:
   '@typescript-eslint/parser': 5.57.1_ip5up2nocltd47wbnuyybe5dxu
   '@vitejs/plugin-react': 3.1.0_vite@4.2.1
   autoprefixer: 10.4.14_postcss@8.4.21
+  clsx: 1.2.1
   conventional-changelog-conventionalcommits: 5.0.0
   eslint: 8.37.0
   eslint-plugin-react: 7.32.2_eslint@8.37.0
@@ -1426,6 +1428,11 @@ packages:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
+    dev: true
+
+  /clsx/1.2.1:
+    resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
+    engines: {node: '>=6'}
     dev: true
 
   /color-convert/1.9.3:
