@@ -1,4 +1,5 @@
-import "@logseq/libs";
+import './mock';
+// import "@logseq/libs";
 
 import React from "react";
 import * as ReactDOM from "react-dom/client";
