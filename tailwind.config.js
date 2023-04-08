@@ -7,4 +7,18 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  safelist: [
+    'bg-red-400',
+    'bg-orange-400',
+    'bg-yellow-400',
+    'bg-lime-400',
+    'bg-cyan-400',
+    'bg-indigo-400',
+    'fill-red-400',
+    'fill-orange-400',
+    'fill-yellow-400',
+    'fill-lime-400',
+    'fill-cyan-400',
+    'fill-indigo-400',
+  ]
 }
