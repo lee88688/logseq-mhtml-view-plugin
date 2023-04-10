@@ -1,10 +1,21 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useAppVisible } from "./utils";
 import { Editor } from "./editor";
+import { Viewer } from "./viewer";
 
 function App() {
   const innerRef = useRef<HTMLDivElement>(null);
   const visible = useAppVisible();
+
+  const [file, setFile] = useState<ArrayBuffer>()
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement
+    console.log(input)
+    const file = await input.files?.[0].arrayBuffer()
+    setFile(file)
+  }
+
   if (visible) {
     return (
       <main
@@ -17,8 +28,9 @@ function App() {
       >
         <div ref={innerRef} className="text-size-2em">
           Welcome to [[Logseq]] Plugins!
+          <input type='file' onChange={handleFileChange}/>
         </div>
-        <Editor/>
+        <Viewer mhtml={file}/>
       </main>
     );
   }

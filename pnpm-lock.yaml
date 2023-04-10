@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@logseq/libs': ^0.0.14
+  '@monsterlee/fast-mhtml': ^2.2.0
   '@semantic-release/changelog': 6.0.3
   '@semantic-release/exec': 6.0.3
   '@semantic-release/git': 10.0.1
@@ -29,6 +30,7 @@ specifiers:
 
 dependencies:
   '@logseq/libs': 0.0.14
+  '@monsterlee/fast-mhtml': 2.2.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
 
@@ -595,6 +597,10 @@ packages:
       snake-case: 3.0.4
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /@monsterlee/fast-mhtml/2.2.0:
+    resolution: {integrity: sha512-yIY/zHxm0uS6e/U239rdOF5xdDNyCH/ABJNjOGNs6LXVU+Yw0oseVyEW8mcGSPBVqdxgDSckD825/Q4M2ZDg6A==}
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:

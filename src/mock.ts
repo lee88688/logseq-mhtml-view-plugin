@@ -18,6 +18,7 @@ class MockLogseq extends EventTarget {
   }
 
   showMainUI() {}
+  hideMainUI() {}
   provideModel() {}
   setMainUIInlineStyle() {}
   provideStyle() {}
