@@ -40,8 +40,8 @@ export function Viewer(props: ViewerProps) {
   }, [parser])
 
   return (
-    <main className='container grow'>
-      <iframe className='w-full h-full' src={iframeUrl}/>
+    <main id="mhtml-layout" className='container grow h-screen relative absolute left-0 top-0' style={{ width: 'var(--mhtml-view-container-width, 100%)'}}>
+      <iframe className='w-full h-full'  src={iframeUrl}/>
     </main>
   )
 }

@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from 'react-dom'
 import { useAppVisible } from "./utils";
 import { Editor } from "./editor";
 import { Viewer } from "./viewer";
@@ -8,6 +9,13 @@ function App() {
   const visible = useAppVisible();
 
   const [file, setFile] = useState<ArrayBuffer>()
+
+  const portalEl = useRef<HTMLDivElement>()
+
+  useEffect(() => {
+    const div = document.getElementById('mhtml-container') as HTMLDivElement | null
+    div && (portalEl.current = div)
+  }, [])
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement
@@ -30,7 +38,7 @@ function App() {
           Welcome to [[Logseq]] Plugins!
           <input type='file' onChange={handleFileChange}/>
         </div>
-        <Viewer mhtml={file}/>
+        {portalEl.current && createPortal(<Viewer mhtml={file}/>, portalEl.current)}
       </main>
     );
   }
