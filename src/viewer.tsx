@@ -1,5 +1,6 @@
-import React, { useRef, useMemo, useEffect, useState } from 'react'
+import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react'
 import Parser from '@monsterlee/fast-mhtml'
+import { VerticalResizer } from './verticalResizer'
 
 export type ViewerProps = {
   mhtml?: ArrayBuffer
@@ -39,9 +40,20 @@ export function Viewer(props: ViewerProps) {
     }
   }, [parser])
 
+  const handleVerticalSizeChange = useCallback((left: number) => {
+    // const vw = Math.min(10, Math.max(left / window.innerWidth * 100, 80))
+    const vw = left / window.innerWidth * 100
+    document.documentElement.style.setProperty('--mhtml-view-container-width', `${vw}vw`)
+  }, [])
+
   return (
-    <main id="mhtml-layout" className='container grow h-screen relative absolute left-0 top-0' style={{ width: 'var(--mhtml-view-container-width, 100%)'}}>
+    <main
+      id="mhtml-layout" 
+      className='container grow h-screen relative absolute left-0 top-0' 
+      style={{ width: 'var(--mhtml-view-container-width, 50vw)'}}
+    >
       <iframe className='w-full h-full'  src={iframeUrl}/>
+      <VerticalResizer onChange={handleVerticalSizeChange}/>
     </main>
   )
 }

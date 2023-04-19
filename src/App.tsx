@@ -28,6 +28,7 @@ function App() {
     return (
       <main
         className="backdrop-filter backdrop-blur-md fixed inset-0 flex flex-col items-center justify-center"
+        style={{ marginLeft: 'calc(100vw - var(--mhtml-view-container-width, 50vw))' }}
         onClick={(e) => {
           if (!innerRef.current?.contains(e.target as any)) {
             window.logseq.hideMainUI();
