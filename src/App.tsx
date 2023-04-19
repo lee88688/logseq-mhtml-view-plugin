@@ -28,7 +28,7 @@ function App() {
     return (
       <main
         className="backdrop-filter backdrop-blur-md fixed inset-0 flex flex-col items-center justify-center"
-        style={{ marginLeft: 'calc(100vw - var(--mhtml-view-container-width, 50vw))' }}
+        style={{ marginLeft: 'var(--mhtml-view-container-width, 50vw)' }}
         onClick={(e) => {
           if (!innerRef.current?.contains(e.target as any)) {
             window.logseq.hideMainUI();
@@ -36,7 +36,6 @@ function App() {
         }}
       >
         <div ref={innerRef} className="text-size-2em">
-          Welcome to [[Logseq]] Plugins!
           <input type='file' onChange={handleFileChange}/>
         </div>
         {portalEl.current && createPortal(<Viewer mhtml={file}/>, portalEl.current)}

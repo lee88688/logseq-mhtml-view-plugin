@@ -7,6 +7,9 @@ dependencies:
   '@monsterlee/fast-mhtml':
     specifier: ^2.3.1
     version: 2.3.1
+  '@notelix/web-marker':
+    specifier: ^2.0.6
+    version: 2.0.6
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -655,6 +658,12 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
     dev: true
+
+  /@notelix/web-marker@2.0.6:
+    resolution: {integrity: sha512-O+Z8HKVaRgzszL0k0fR7p5iGhMNjoeLZwPsusFo9IhlMwbbNLJo0oZcky0dXW7N8F5irdD9VddSCfXL3H3p1yg==}
+    dependencies:
+      uuid: 8.3.2
+    dev: false
 
   /@octokit/auth-token@3.0.3:
     resolution: {integrity: sha512-/aFM2M4HVDBT/jjDBa84sJniv1t9Gm/rLkalaz9htOm+L+8JMj1k9w0CkUdcxNyNxZPlTxKPVko+m1VlM58ZVA==}
@@ -4964,6 +4973,11 @@ packages:
   /utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+    dev: false
+
+  /uuid@8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
     dev: false
 
   /validate-npm-package-license@3.0.4:

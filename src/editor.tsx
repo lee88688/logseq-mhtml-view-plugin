@@ -11,6 +11,16 @@ export enum HighlightColor {
   Indigo = 'indigo',
 }
 
+export const ColorMap: Record<HighlightColor, string> = {
+  [HighlightColor.None]: '',
+  [HighlightColor.Red]: 'rgb(248 113 113)',
+  [HighlightColor.Orange]: 'rgb(251 146 60)',
+  [HighlightColor.Yellow]: 'rgb(250 204 21)',
+  [HighlightColor.Lime]: 'rgb(163 230 53)',
+  [HighlightColor.Cyan]: 'rgb(34 211 238)',
+  [HighlightColor.Indigo]: 'rgb(129 140 248)',
+}
+
 export type EditorContent = {
   color: HighlightColor;
   isUnderline: boolean;

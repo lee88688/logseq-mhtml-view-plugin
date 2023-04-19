@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef } from 'react'
 
 export interface VerticalResizerProps {
   onChange?: (left: number) => void;
+  onStart?: () => void;
+  onEnd?: () => void;
 }
 
 export function VerticalResizer(props: VerticalResizerProps) {
@@ -19,6 +21,7 @@ export function VerticalResizer(props: VerticalResizerProps) {
 
   const handleMouseUp = useCallback(() => {
     window.removeEventListener('mousemove', handleMouseMove)
+    props.onEnd?.()
   }, [handleMouseMove])
 
   useEffect(() => {
@@ -34,6 +37,7 @@ export function VerticalResizer(props: VerticalResizerProps) {
       className='absolute h-screen cursor-col-resize w-0.5 right-0 top-0'
       onMouseDown={e => {
         window.addEventListener('mousemove', handleMouseMove)
+        props.onStart?.()
       }}
     />
   )
