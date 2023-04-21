@@ -1,7 +1,7 @@
 import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react'
 import Parser from '@monsterlee/fast-mhtml'
-import { VerticalResizer } from './verticalResizer'
 import {Marker} from "@notelix/web-marker"
+import { VerticalResizer } from './verticalResizer'
 
 export type ViewerProps = {
   mhtml?: ArrayBuffer
@@ -46,12 +46,14 @@ export function Viewer(props: ViewerProps) {
     }
   }, [parser])
 
-  const contentWindow = iframeRef.current?.contentWindow
+  let contentWindow: Window | undefined
+  let mousemove: any
+  let mouseup: any
 
   useEffect(() => {
     if (iframeUrl && iframeRef.current) {
       iframeRef.current.onload = () => {
-        const contentWindow = iframeRef.current.contentWindow!
+        contentWindow = iframeRef.current.contentWindow!
 
         markerRef.current = new Marker({
           rootElement: contentWindow.document.body,
@@ -73,12 +75,12 @@ export function Viewer(props: ViewerProps) {
   
         markerRef.current.addEventListeners()
   
-        const mousemove = (e: MouseEvent) => {
+        mousemove = (e: MouseEvent) => {
           const { pageX, pageY } = e;
           contentWindow.pointerPos = { x: pageX, y: pageY };
         }
   
-        const mouseup = (e: MouseEvent) => {
+        mouseup = (e: MouseEvent) => {
           const selection = contentWindow.getSelection();
           if (!selection) return;
           const range = selection.getRangeAt(0);
@@ -92,12 +94,11 @@ export function Viewer(props: ViewerProps) {
         contentWindow.addEventListener('pointermove', mousemove)
       }
 
-      // todo
-      // return () => {
-      //   markerRef.current.removeEventListeners()
-      //   contentWindow.removeEventListener('mouseup', mouseup)
-      //   contentWindow.removeEventListener('pointermove', mousemove)
-      // }
+      return () => {
+        markerRef.current.removeEventListeners()
+        contentWindow?.removeEventListener('mouseup', mouseup)
+        contentWindow?.removeEventListener('pointermove', mousemove)
+      }
     }
   }, [iframeUrl])
 

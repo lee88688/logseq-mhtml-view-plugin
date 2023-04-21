@@ -13,7 +13,8 @@
     "@monsterlee/fast-mhtml": "^2.3.1",
     "@notelix/web-marker": "^2.0.6",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zustand": "^4.3.7"
   },
   "devDependencies": {
     "@semantic-release/changelog": "6.0.3",
