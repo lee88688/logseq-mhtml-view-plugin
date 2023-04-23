@@ -5,7 +5,6 @@ import { Editor } from "./editor";
 import { Viewer } from "./viewer";
 
 function App() {
-  const innerRef = useRef<HTMLDivElement>(null);
   const visible = useAppVisible();
 
   const [file, setFile] = useState<ArrayBuffer>()
@@ -29,13 +28,8 @@ function App() {
       <main
         className="backdrop-filter backdrop-blur-md fixed inset-0 flex flex-col items-center justify-center"
         style={{ marginLeft: 'var(--mhtml-view-container-width, 50vw)' }}
-        onClick={(e) => {
-          if (!innerRef.current?.contains(e.target as any)) {
-            window.logseq.hideMainUI();
-          }
-        }}
       >
-        <div ref={innerRef} className="text-size-2em">
+        <div className="text-size-2em">
           <input type='file' onChange={handleFileChange}/>
         </div>
         {portalEl.current && createPortal(<Viewer mhtml={file}/>, portalEl.current)}

@@ -1,59 +1,50 @@
-import React, { useRef, useMemo, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState, useCallback } from 'react'
 import Parser from '@monsterlee/fast-mhtml'
 import {Marker} from "@notelix/web-marker"
 import { VerticalResizer } from './verticalResizer'
+import { useViewerStore } from './store/viewer'
 
 export type ViewerProps = {
   mhtml?: ArrayBuffer
 }
 
 export function Viewer(props: ViewerProps) {
-  const [iframeUrl, setIframeUrl] = useState<string>()
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const [isVerticalChange, setIsVerticalChange] = useState(false)
 
-  const preParserRef = useRef<Parser>()
-
   const markerRef = useRef<Marker>()
 
-  const parser = useMemo(() => {
-    if (!props.mhtml) return;
+  const iframeUrl = useViewerStore(state => {
+    const parser = state.parser
+    return parser && parser.parts && parser.parts[0].rewriteLocation
+  })
 
-    const parser = new Parser({
-      rewriteFn(url, part) {
-        let blob = new Blob([part.body], { type: part.type })
-        ;(part as any)._blob = blob
-        return URL.createObjectURL(blob)
-      }
-    })
-    return parser
+  const createParser = useViewerStore(state => state.createParser)
+
+  const ref = useRef(props.mhtml)
+  console.log('mhtml', props.mhtml)
+
+  useEffect(() => {
+    const createProces = createParser(props.mhtml)
+    console.log('create process', ref.current === props.mhtml)
+    ref.current = props.mhtml
+
+    return () => {
+      createProces.then(parser => {
+        for (const part of parser.parts) {
+          part.rewriteLocation && URL.revokeObjectURL(part.rewriteLocation)
+        }
+        console.log('revoke url')
+      })
+    }
   }, [props.mhtml])
 
   useEffect(() => {
-    if (parser) {
-      if (preParserRef.current) {
-        for (let part of preParserRef.current.parts) {
-          part.rewriteLocation && URL.revokeObjectURL(part.rewriteLocation)
-        }
-      }
-
-      parser.parse(props.mhtml as any)
-      parser.rewrite()
-      setIframeUrl(parser && parser.parts && parser.parts[0].rewriteLocation)
-
-      preParserRef.current = parser
-    }
-  }, [parser])
-
-  let contentWindow: Window | undefined
-  let mousemove: any
-  let mouseup: any
-
-  useEffect(() => {
+    let removeCallback: undefined | (() => void)
     if (iframeUrl && iframeRef.current) {
       iframeRef.current.onload = () => {
-        contentWindow = iframeRef.current.contentWindow!
+        const contentWindow = iframeRef.current?.contentWindow!
 
         markerRef.current = new Marker({
           rootElement: contentWindow.document.body,
@@ -75,12 +66,12 @@ export function Viewer(props: ViewerProps) {
   
         markerRef.current.addEventListeners()
   
-        mousemove = (e: MouseEvent) => {
-          const { pageX, pageY } = e;
-          contentWindow.pointerPos = { x: pageX, y: pageY };
+        const mousemove = (e: MouseEvent) => {
+          // const { pageX, pageY } = e;
+          // contentWindow.pointerPos = { x: pageX, y: pageY };
         }
   
-        mouseup = (e: MouseEvent) => {
+        const mouseup = (e: MouseEvent) => {
           const selection = contentWindow.getSelection();
           if (!selection) return;
           const range = selection.getRangeAt(0);
@@ -92,21 +83,21 @@ export function Viewer(props: ViewerProps) {
   
         contentWindow.addEventListener('mouseup', mouseup)
         contentWindow.addEventListener('pointermove', mousemove)
+
+        removeCallback = () => {
+          markerRef.current.removeEventListeners()
+          contentWindow?.removeEventListener('mouseup', mouseup)
+          contentWindow?.removeEventListener('pointermove', mousemove)
+        }
       }
 
       return () => {
-        markerRef.current.removeEventListeners()
-        contentWindow?.removeEventListener('mouseup', mouseup)
-        contentWindow?.removeEventListener('pointermove', mousemove)
+        removeCallback?.()
       }
     }
   }, [iframeUrl])
 
-  const handleVerticalSizeChange = useCallback((left: number) => {
-    // const vw = Math.min(10, Math.max(left / window.innerWidth * 100, 80))
-    const vw = left / window.innerWidth * 100
-    document.documentElement.style.setProperty('--mhtml-view-container-width', `${vw}vw`)
-  }, [])
+  const handleVerticalSizeChange = useViewerStore(state => state.setViewerWidth)
 
   const handleVerticalSizeStart = useCallback(() => setIsVerticalChange(true), [])
   const handleVerticalSizeEnd = useCallback(() => setIsVerticalChange(false), [])
