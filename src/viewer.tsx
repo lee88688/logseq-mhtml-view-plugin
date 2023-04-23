@@ -22,20 +22,16 @@ export function Viewer(props: ViewerProps) {
 
   const createParser = useViewerStore(state => state.createParser)
 
-  const ref = useRef(props.mhtml)
-  console.log('mhtml', props.mhtml)
-
   useEffect(() => {
     const createProces = createParser(props.mhtml)
-    console.log('create process', ref.current === props.mhtml)
-    ref.current = props.mhtml
 
     return () => {
       createProces.then(parser => {
+        if (!parser) return
+
         for (const part of parser.parts) {
           part.rewriteLocation && URL.revokeObjectURL(part.rewriteLocation)
         }
-        console.log('revoke url')
       })
     }
   }, [props.mhtml])

@@ -8,12 +8,11 @@ function App() {
   const visible = useAppVisible();
 
   const [file, setFile] = useState<ArrayBuffer>()
-
-  const portalEl = useRef<HTMLDivElement>()
+  const [portalEl, setPortalEl] = useState<HTMLElement>()
 
   useEffect(() => {
     const div = document.getElementById('mhtml-container') as HTMLDivElement | null
-    div && (portalEl.current = div)
+    div && setPortalEl(div)
   }, [])
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +31,7 @@ function App() {
         <div className="text-size-2em">
           <input type='file' onChange={handleFileChange}/>
         </div>
-        {portalEl.current && createPortal(<Viewer mhtml={file}/>, portalEl.current)}
+        {portalEl && createPortal(<Viewer mhtml={file}/>, portalEl)}
       </main>
     );
   }
