@@ -2,8 +2,17 @@ import Parser from '@monsterlee/fast-mhtml'
 import { create } from 'zustand'
 import {Marker} from "@notelix/web-marker"
 
+interface SerializedRange {
+  uid: string;
+  textBefore: string;
+  text: string;
+  textAfter: string;
+}
+
 interface Mark {
-  annotation: string;
+  id: string;
+  comment: string;
+  position: SerializedRange;
 }
 
 interface ViewerSetting {
@@ -49,13 +58,30 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
 
     return new Promise<void>((resolve, reject) => {
       setTimeout(() => {
-        parser.parse(mhtml as any)
-        parser.rewrite()
+        try {
+          parser.parse(mhtml as any)
+          parser.rewrite()
+        } catch (e) {
+          reject(e)
+          return
+        }
 
         set({ parser })
         resolve(parser)
       })
     })
+  },
+  addMark(mark: Mark) {
+    const marks = get().marks
+    set({ marks: marks.concat(mark) })
+  },
+  removeMark(mark: Mark) {
+    const marks = get().marks
+    set({ marks: marks.filter(item => item.id === mark.id) })
+  },
+  updateMark(mark: Mark) {
+    const marks = get().marks
+    set({ marks: marks.map(item => item.id === mark.id ? mark : item )})
   }
 }))
 

@@ -4,6 +4,7 @@
   "main": "dist/index.html",
   "scripts": {
     "dev": "vite",
+    "dev:mock": "vite --mode=mock",
     "build": "tsc && vite build",
     "preinstall": "npx only-allow pnpm"
   },
@@ -12,6 +13,7 @@
     "@logseq/libs": "^0.0.14",
     "@monsterlee/fast-mhtml": "^2.3.1",
     "@notelix/web-marker": "^2.0.6",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "zustand": "^4.3.7"
@@ -21,6 +23,7 @@
     "@semantic-release/exec": "6.0.3",
     "@semantic-release/git": "10.0.1",
     "@semantic-release/npm": "9.0.2",
+    "@types/lodash": "^4.14.194",
     "@types/node": "18.15.11",
     "@types/react": "18.0.33",
     "@types/react-dom": "18.0.11",

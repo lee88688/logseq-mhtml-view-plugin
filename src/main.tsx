@@ -1,5 +1,4 @@
-import './mock';
-// import "@logseq/libs";
+import "@logseq/libs";
 
 import React from "react";
 import * as ReactDOM from "react-dom/client";
@@ -14,7 +13,49 @@ const css = (t, ...args) => String.raw(t, ...args);
 const pluginId = PL.id;
 
 function main() {
-  console.info(`#${pluginId}: MAIN`);
+  // create portal element in logseq
+  // register macro and block renderer
+
+  console.log(import.meta.env.VITE_IS_MOCK)
+  console.log(import.meta.env.DEV)
+  console.log(import.meta.env.MODE)
+
+  if (!import.meta.env.VITE_IS_MOCK) {
+    function createModel() {
+      return {
+        show() {
+          logseq.showMainUI();
+        },
+      };
+    }
+  
+    logseq.provideModel(createModel());
+    logseq.setMainUIInlineStyle({
+      zIndex: 11,
+    });
+  
+    const openIconName = "template-plugin-open";
+  
+    logseq.provideStyle(css`
+      .${openIconName} {
+        opacity: 0.55;
+        font-size: 20px;
+        margin-top: 4px;
+      }
+  
+      .${openIconName}:hover {
+        opacity: 0.9;
+      }
+    `);
+  
+    logseq.App.registerUIItem("toolbar", {
+      key: openIconName,
+      template: `
+        <div data-on-click="show" class="${openIconName}">⚙️</div>
+      `,
+    });
+  }
+
   const root = ReactDOM.createRoot(document.getElementById("app")!);
 
   root.render(
@@ -22,40 +63,10 @@ function main() {
       <App />
     </React.StrictMode>
   );
-
-  function createModel() {
-    return {
-      show() {
-        logseq.showMainUI();
-      },
-    };
-  }
-
-  logseq.provideModel(createModel());
-  logseq.setMainUIInlineStyle({
-    zIndex: 11,
-  });
-
-  const openIconName = "template-plugin-open";
-
-  logseq.provideStyle(css`
-    .${openIconName} {
-      opacity: 0.55;
-      font-size: 20px;
-      margin-top: 4px;
-    }
-
-    .${openIconName}:hover {
-      opacity: 0.9;
-    }
-  `);
-
-  logseq.App.registerUIItem("toolbar", {
-    key: openIconName,
-    template: `
-      <div data-on-click="show" class="${openIconName}">⚙️</div>
-    `,
-  });
 }
 
-logseq.ready(main).catch(console.error);
+if (import.meta.env.VITE_IS_MOCK) {
+  main()
+} else {
+  logseq.ready(main).catch(console.error)
+}

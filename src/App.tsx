@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from 'react-dom'
 import { useAppVisible } from "./utils";
 import { Editor } from "./editor";
 import { Viewer } from "./viewer";
 
 function App() {
-  const visible = useAppVisible();
+  const visible = true
 
   const [file, setFile] = useState<ArrayBuffer>()
   const [portalEl, setPortalEl] = useState<HTMLElement>()
