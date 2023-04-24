@@ -3,9 +3,10 @@ import clsx from 'clsx'
 
 export enum HighlightColor {
   None = '',
-  Red = 'red',
-  Orange = 'orange',
   Yellow = 'yellow',
+  Red = 'red',
+  Pink = 'pink',
+  Orange = 'orange',
   Lime = 'lime',
   Cyan = 'cyan',
   Indigo = 'indigo',
@@ -13,9 +14,10 @@ export enum HighlightColor {
 
 export const ColorMap: Record<HighlightColor, string> = {
   [HighlightColor.None]: '',
-  [HighlightColor.Red]: 'rgb(248 113 113)',
-  [HighlightColor.Orange]: 'rgb(251 146 60)',
   [HighlightColor.Yellow]: 'rgb(250 204 21)',
+  [HighlightColor.Red]: 'rgb(248 113 113)',
+  [HighlightColor.Pink]: 'rgb(244 114 182)',
+  [HighlightColor.Orange]: 'rgb(251 146 60)',
   [HighlightColor.Lime]: 'rgb(163 230 53)',
   [HighlightColor.Cyan]: 'rgb(34 211 238)',
   [HighlightColor.Indigo]: 'rgb(129 140 248)',
@@ -45,9 +47,9 @@ export function Editor(props: EditorProps) {
       <div className='h-1/2 flex flex-row items-center justify-between'>
         <div className='h-full flex flex-row items-center'>
           <ColorButton/>
-          <ColorButton active={props.color === HighlightColor.Red} color={HighlightColor.Red} onClick={handleColorChange}/>
-          <ColorButton active={props.color === HighlightColor.Orange} color={HighlightColor.Orange} onClick={handleColorChange}/>
           <ColorButton active={props.color === HighlightColor.Yellow} color={HighlightColor.Yellow} onClick={handleColorChange}/>
+          <ColorButton active={props.color === HighlightColor.Red} color={HighlightColor.Red} onClick={handleColorChange}/>
+          <ColorButton active={props.color === HighlightColor.Pink} color={HighlightColor.Pink} onClick={handleColorChange}/>
           <ColorButton active={props.color === HighlightColor.Lime} color={HighlightColor.Lime} onClick={handleColorChange}/>
           <ColorButton active={props.color === HighlightColor.Cyan} color={HighlightColor.Cyan} onClick={handleColorChange}/>
           <ColorButton active={props.color === HighlightColor.Indigo} color={HighlightColor.Indigo} onClick={handleColorChange}/>

@@ -101,7 +101,7 @@ export function Viewer(props: ViewerProps) {
   return (
     <main
       id="mhtml-layout"
-      className='container grow h-screen relative absolute left-0 top-0'
+      className='container grow h-screen absolute left-0 top-0'
       style={{ width: 'var(--mhtml-view-container-width, 50vw)'}}
     >
       <iframe 
