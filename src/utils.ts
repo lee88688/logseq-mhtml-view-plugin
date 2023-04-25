@@ -1,4 +1,5 @@
 import { LSPluginUserEvents } from "@logseq/libs/dist/LSPlugin.user";
+import {BlockCommandCallback} from '@logseq/libs/dist/LSPlugin'
 import React from "react";
 
 let _visible = logseq.isMainUIVisible;
@@ -22,3 +23,36 @@ const subscribeToUIVisible = (onChange: () => void) =>
 export const useAppVisible = () => {
   return React.useSyncExternalStore(subscribeToUIVisible, () => _visible);
 };
+
+function isValidFileName(name: string) {
+  return /\.(mhtml|html)/i.test(name)
+}
+
+export const importFile: BlockCommandCallback = async (event) => {
+  const storage = logseq.Assets.makeSandboxStorage()
+  const input = document.createElement('input')
+  input.type = 'file'
+  return new Promise<void>((resolve, reject) => {
+    input.addEventListener('change', async () => {
+      const file = input.files?.[0]
+      if (!file || !isValidFileName(file.name)) {
+        reject()
+        return
+      }
+      const fileName = file.name
+      const hasFile = await storage.hasItem(fileName)
+      if (hasFile) {
+        logseq.UI.showMsg('file name already exists!')
+        reject()
+        return
+      }
+      const content = await file.text()
+      await storage.setItem(fileName, content)
+      await logseq.Editor.insertAtEditingCursor(`{{ renderer :mhtml, ${fileName} }}`)
+      resolve()
+    })
+    // todo: when user not select file will reject too.
+
+    input.click()
+  })
+}

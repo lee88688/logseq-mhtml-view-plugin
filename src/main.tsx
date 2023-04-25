@@ -6,6 +6,7 @@ import App from "./App";
 import "./index.css";
 
 import { logseq as PL } from "../package.json";
+import { importFile } from "./utils";
 
 // @ts-expect-error
 const css = (t, ...args) => String.raw(t, ...args);
@@ -15,6 +16,10 @@ const pluginId = PL.id;
 function main() {
   // create portal element in logseq
   // register macro and block renderer
+
+  // startup setting
+  // - register macros
+  // - block renderer
 
   console.log(import.meta.env.VITE_IS_MOCK)
   console.log(import.meta.env.DEV)
@@ -28,12 +33,25 @@ function main() {
         },
       };
     }
+
+    logseq.Editor.registerSlashCommand('import mhtml', importFile)
+
+    logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
+      const [type, fileName] = payload.arguments
+      if (type !== ':mhtml') return
+
+      return logseq.provideUI({
+        key: fileName,
+        slot,
+        template: `<a>${fileName}</a>`
+      })
+    })
   
     logseq.provideModel(createModel());
     logseq.setMainUIInlineStyle({
       zIndex: 11,
     });
-  
+
     const openIconName = "template-plugin-open";
   
     logseq.provideStyle(css`
