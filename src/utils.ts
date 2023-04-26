@@ -71,3 +71,18 @@ export async function openMhtmlFile(e: MouseEvent) {
   
   useViewerStore.getState().openFile(fileName, content)
 }
+
+export async function startSetup() {
+  // create anchor element
+  const top = window.top
+  if (!top) {
+    // todo: show error
+    return
+  }
+
+  const div = top.document.createAttribute('div')
+  div.id = 'mthml-container'
+
+  const appContainer = top.document.getElementById('app-container')
+  appContainer?.appendChild(div)
+}

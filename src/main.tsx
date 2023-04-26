@@ -6,7 +6,7 @@ import App from "./App";
 import "./index.css";
 
 import { logseq as PL } from "../package.json";
-import { importFile, openMhtmlFile } from "./utils";
+import { importFile, openMhtmlFile, startSetup } from "./utils";
 import { useViewerStore } from "./store/viewer";
 
 // @ts-expect-error
@@ -74,6 +74,8 @@ function main() {
         <div data-on-click="show" class="${openIconName}">⚙️</div>
       `,
     });
+
+    startSetup()
   } else {
     useViewerStore.setState({ visible: true })
   }
