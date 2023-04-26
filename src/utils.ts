@@ -1,6 +1,7 @@
 import { LSPluginUserEvents } from "@logseq/libs/dist/LSPlugin.user";
 import {BlockCommandCallback} from '@logseq/libs/dist/LSPlugin'
 import React from "react";
+import { useViewerStore } from "./store/viewer";
 
 let _visible = logseq.isMainUIVisible;
 
@@ -55,4 +56,18 @@ export const importFile: BlockCommandCallback = async (event) => {
 
     input.click()
   })
+}
+
+export async function openMhtmlFile(e: MouseEvent) {
+  const fileName = (e.target as HTMLElement).dataset.filename
+  if (!fileName) return
+
+  const storage = logseq.Assets.makeSandboxStorage()
+  const hasFile = await storage.hasItem(fileName)
+  if (!hasFile) return
+
+  const content = await storage.getItem(fileName)
+  if (!content) return
+  
+  useViewerStore.getState().openFile(fileName, content)
 }

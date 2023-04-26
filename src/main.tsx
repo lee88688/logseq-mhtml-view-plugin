@@ -6,7 +6,8 @@ import App from "./App";
 import "./index.css";
 
 import { logseq as PL } from "../package.json";
-import { importFile } from "./utils";
+import { importFile, openMhtmlFile } from "./utils";
+import { useViewerStore } from "./store/viewer";
 
 // @ts-expect-error
 const css = (t, ...args) => String.raw(t, ...args);
@@ -31,6 +32,7 @@ function main() {
         show() {
           logseq.showMainUI();
         },
+        openMhtmlFile,
       };
     }
 
@@ -43,7 +45,7 @@ function main() {
       return logseq.provideUI({
         key: fileName,
         slot,
-        template: `<a>${fileName}</a>`
+        template: `<a data-filename="${fileName}" onclick="openMhtmlFile">${fileName}</a>`
       })
     })
   
@@ -72,6 +74,8 @@ function main() {
         <div data-on-click="show" class="${openIconName}">⚙️</div>
       `,
     });
+  } else {
+    useViewerStore.setState({ visible: true })
   }
 
   const root = ReactDOM.createRoot(document.getElementById("app")!);

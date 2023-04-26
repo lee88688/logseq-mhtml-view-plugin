@@ -21,6 +21,8 @@ interface ViewerSetting {
 }
 
 interface ViewerState {
+  visible: boolean;
+  content?: string | ArrayBuffer;
   viewerSetting: ViewerSetting;
   fileName: string;
   marks: Mark[];
@@ -29,9 +31,11 @@ interface ViewerState {
 
   setViewerWidth: (left: number) => void;
   createParser: (mhtml?: string | ArrayBuffer) => Promise<Parser | undefined>;
+  openFile: (fileName: string, content: string | ArrayBuffer) => Promise<void>;
 }
 
 export const useViewerStore = create<ViewerState>()((set, get) => ({
+  visible: false,
   viewerSetting: {
     scale: '100%',
     width: '50vw',
@@ -82,6 +86,9 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
   updateMark(mark: Mark) {
     const marks = get().marks
     set({ marks: marks.map(item => item.id === mark.id ? mark : item )})
+  },
+  async openFile(fileName: string, content: string | ArrayBuffer) {
+    set({ fileName, content })
   }
 }))
 

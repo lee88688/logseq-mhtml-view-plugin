@@ -1,14 +1,10 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState, useCallback, useDeferredValue } from 'react'
 import Parser from '@monsterlee/fast-mhtml'
 import {Marker} from "@notelix/web-marker"
 import { VerticalResizer } from './verticalResizer'
 import { useViewerStore } from './store/viewer'
 
-export type ViewerProps = {
-  mhtml?: ArrayBuffer
-}
-
-export function Viewer(props: ViewerProps) {
+export function Viewer() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const [isVerticalChange, setIsVerticalChange] = useState(false)
@@ -22,8 +18,10 @@ export function Viewer(props: ViewerProps) {
 
   const createParser = useViewerStore(state => state.createParser)
 
+  const mhtml = useDeferredValue(useViewerStore(state => state.content))
+
   useEffect(() => {
-    const createProces = createParser(props.mhtml)
+    const createProces = createParser(mhtml)
 
     return () => {
       createProces.then(parser => {
@@ -34,7 +32,7 @@ export function Viewer(props: ViewerProps) {
         }
       })
     }
-  }, [props.mhtml])
+  }, [mhtml])
 
   useEffect(() => {
     let removeCallback: undefined | (() => void)

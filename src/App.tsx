@@ -3,11 +3,11 @@ import { createPortal } from 'react-dom'
 import { useAppVisible } from "./utils";
 import { Editor } from "./editor";
 import { Viewer } from "./viewer";
+import { useViewerStore } from "./store/viewer";
 
 function App() {
-  const visible = true
+  const visible = useViewerStore(state => state.visible)
 
-  const [file, setFile] = useState<ArrayBuffer>()
   const [portalEl, setPortalEl] = useState<HTMLElement>()
 
   useEffect(() => {
@@ -15,11 +15,17 @@ function App() {
     div && setPortalEl(div)
   }, [])
 
+  const openFile = useViewerStore(state => state.openFile)
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement
     console.log(input)
-    const file = await input.files?.[0].arrayBuffer()
-    setFile(file)
+    const file = input.files?.[0]
+    if (!file) return
+
+    const content = await file.arrayBuffer()
+    const fileName = file.name
+    openFile(fileName, content)
   }
 
   if (visible) {
@@ -31,7 +37,7 @@ function App() {
         <div className="text-size-2em">
           <input type='file' onChange={handleFileChange}/>
         </div>
-        {portalEl && createPortal(<Viewer mhtml={file}/>, portalEl)}
+        {portalEl && createPortal(<Viewer/>, portalEl)}
       </main>
     );
   }
