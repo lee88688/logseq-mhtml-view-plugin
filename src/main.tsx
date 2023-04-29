@@ -27,11 +27,8 @@ function main() {
   console.log(import.meta.env.MODE)
 
   if (!import.meta.env.VITE_IS_MOCK) {
-    function createModel() {
+    const createModel = () => {
       return {
-        show() {
-          logseq.showMainUI();
-        },
         openMhtmlFile,
       };
     }
@@ -40,12 +37,13 @@ function main() {
 
     logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
       const [type, fileName] = payload.arguments
+      console.log('slot renderer', payload.arguments)
       if (type !== ':mhtml') return
 
       return logseq.provideUI({
         key: fileName,
         slot,
-        template: `<a data-filename="${fileName}" onclick="openMhtmlFile">${fileName}</a>`
+        template: `<a data-filename="${fileName}" data-on-click="openMhtmlFile">${fileName}</a>`
       })
     })
   
@@ -54,7 +52,7 @@ function main() {
       zIndex: 11,
     });
 
-    const openIconName = "template-plugin-open";
+    const openIconName = "mthml";
   
     logseq.provideStyle(css`
       .${openIconName} {

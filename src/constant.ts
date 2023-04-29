@@ -1,0 +1,1 @@
+export const MHTML_CONTAINER_ID = 'mhtml-container'

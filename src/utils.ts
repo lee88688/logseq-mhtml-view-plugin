@@ -2,6 +2,13 @@ import { LSPluginUserEvents } from "@logseq/libs/dist/LSPlugin.user";
 import {BlockCommandCallback} from '@logseq/libs/dist/LSPlugin'
 import React from "react";
 import { useViewerStore } from "./store/viewer";
+import { MHTML_CONTAINER_ID } from "./constant";
+
+interface LogseqModelEvent {
+  id: string;
+  type: string;
+  dataset: Record<string, string>
+}
 
 let _visible = logseq.isMainUIVisible;
 
@@ -49,7 +56,7 @@ export const importFile: BlockCommandCallback = async (event) => {
       }
       const content = await file.text()
       await storage.setItem(fileName, content)
-      await logseq.Editor.insertAtEditingCursor(`{{ renderer :mhtml, ${fileName} }}`)
+      await logseq.Editor.insertAtEditingCursor(`{{renderer :mhtml, ${fileName}}}`)
       resolve()
     })
     // todo: when user not select file will reject too.
@@ -58,8 +65,8 @@ export const importFile: BlockCommandCallback = async (event) => {
   })
 }
 
-export async function openMhtmlFile(e: MouseEvent) {
-  const fileName = (e.target as HTMLElement).dataset.filename
+export async function openMhtmlFile(e: LogseqModelEvent) {
+  const fileName = e.dataset.filename
   if (!fileName) return
 
   const storage = logseq.Assets.makeSandboxStorage()
@@ -80,8 +87,8 @@ export async function startSetup() {
     return
   }
 
-  const div = top.document.createAttribute('div')
-  div.id = 'mthml-container'
+  const div = top.document.createElement('div')
+  div.id = MHTML_CONTAINER_ID
 
   const appContainer = top.document.getElementById('app-container')
   appContainer?.appendChild(div)

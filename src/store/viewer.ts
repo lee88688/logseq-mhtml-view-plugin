@@ -88,7 +88,7 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
     set({ marks: marks.map(item => item.id === mark.id ? mark : item )})
   },
   async openFile(fileName: string, content: string | ArrayBuffer) {
-    set({ fileName, content })
+    set({ fileName, content, visible: true })
   }
 }))
 

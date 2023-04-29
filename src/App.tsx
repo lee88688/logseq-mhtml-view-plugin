@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from 'react-dom'
-import { useAppVisible } from "./utils";
 import { Editor } from "./editor";
 import { Viewer } from "./viewer";
 import { useViewerStore } from "./store/viewer";
+import { MHTML_CONTAINER_ID } from "./constant";
 
 function App() {
   const visible = useViewerStore(state => state.visible)
@@ -11,9 +11,17 @@ function App() {
   const [portalEl, setPortalEl] = useState<HTMLElement>()
 
   useEffect(() => {
-    const div = document.getElementById('mhtml-container') as HTMLDivElement | null
-    div && setPortalEl(div)
-  }, [])
+    if (visible) {
+      let div: HTMLElement | null | undefined
+      if (import.meta.env.VITE_IS_MOCK)
+        div = document.getElementById(MHTML_CONTAINER_ID) as HTMLDivElement | null
+      else {
+        div = window.top?.document.getElementById(MHTML_CONTAINER_ID)
+        console.log('div', div)
+      }
+      div && setPortalEl(div)
+    }
+  }, [visible])
 
   const openFile = useViewerStore(state => state.openFile)
 

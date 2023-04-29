@@ -32,7 +32,7 @@ export function Viewer() {
         }
       })
     }
-  }, [mhtml])
+  }, [createParser, mhtml])
 
   useEffect(() => {
     let removeCallback: undefined | (() => void)
