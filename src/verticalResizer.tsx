@@ -34,7 +34,7 @@ export function VerticalResizer(props: VerticalResizerProps) {
 
   return (
     <div
-      className='absolute h-screen cursor-col-resize w-0.5 right-0 top-0'
+      className='mhtml-plugin__vertical-resizer'
       onMouseDown={e => {
         window.addEventListener('mousemove', handleMouseMove)
         props.onStart?.()

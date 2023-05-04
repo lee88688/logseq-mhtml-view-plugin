@@ -1,0 +1,3 @@
+.mhtml-plugin__vertical-resizer {
+  @apply absolute h-screen cursor-col-resize w-0.5 right-0 top-0
+}

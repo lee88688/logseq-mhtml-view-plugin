@@ -13,12 +13,7 @@ function App() {
   useEffect(() => {
     if (visible) {
       let div: HTMLElement | null | undefined
-      if (import.meta.env.VITE_IS_MOCK)
-        div = document.getElementById(MHTML_CONTAINER_ID) as HTMLDivElement | null
-      else {
-        div = window.top?.document.getElementById(MHTML_CONTAINER_ID)
-        console.log('div', div)
-      }
+      div = window.top?.document.getElementById(MHTML_CONTAINER_ID)
       div && setPortalEl(div)
     }
   }, [visible])

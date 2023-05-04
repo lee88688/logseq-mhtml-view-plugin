@@ -3,7 +3,8 @@ import "@logseq/libs";
 import React from "react";
 import * as ReactDOM from "react-dom/client";
 import App from "./App";
-import "./index.css";
+import "./style/index.css";
+import provideStyle from './style/provide.css?inline'
 
 import { logseq as PL } from "../package.json";
 import { importFile, openMhtmlFile, startSetup } from "./utils";
@@ -65,6 +66,8 @@ function main() {
         opacity: 0.9;
       }
     `);
+
+    logseq.provideStyle(provideStyle)
   
     logseq.App.registerUIItem("toolbar", {
       key: openIconName,
@@ -75,6 +78,9 @@ function main() {
 
     startSetup()
   } else {
+    const style = document.createElement('style')
+    style.innerHTML = provideStyle
+    document.head.appendChild(style)
     useViewerStore.setState({ visible: true })
   }
 
