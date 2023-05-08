@@ -1,6 +1,7 @@
 import Parser from '@monsterlee/fast-mhtml'
 import { create } from 'zustand'
 import {Marker} from "@notelix/web-marker"
+import { FileType } from '../constant';
 
 interface SerializedRange {
   uid: string;
@@ -21,6 +22,7 @@ interface ViewerSetting {
 }
 
 interface ViewerState {
+  type: FileType;
   visible: boolean;
   content?: string | ArrayBuffer;
   viewerSetting: ViewerSetting;
@@ -35,6 +37,7 @@ interface ViewerState {
 }
 
 export const useViewerStore = create<ViewerState>()((set, get) => ({
+  type: FileType.MHTML,
   visible: false,
   viewerSetting: {
     scale: '100%',
@@ -54,13 +57,13 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
 
     const parser = new Parser({
       rewriteFn(url: string, part: any) {
-        let blob = new Blob([part.body], { type: part.type })
+        const blob = new Blob([part.body], { type: part.type })
         ;(part as any)._blob = blob
         return URL.createObjectURL(blob)
       }
     })
 
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<Parser | undefined>((resolve, reject) => {
       setTimeout(() => {
         try {
           parser.parse(mhtml as any)

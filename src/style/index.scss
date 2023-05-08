@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.mhtml-plugin {
+  &__toolbar {
+    @apply flex flex-row backdrop-blur-sm p-2;
+
+    &-item {
+      @apply p-1 mx-2 cursor-pointer flex justify-center items-center;
+
+      &.is-active {
+        @apply border-b-2;
+      }
+    }
+  }
+
+  &__toolbar-wrap {
+    @apply absolute top-0 right-0;
+  }
+}

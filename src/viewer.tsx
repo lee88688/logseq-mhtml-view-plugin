@@ -3,6 +3,7 @@ import Parser from '@monsterlee/fast-mhtml'
 import {Marker} from "@notelix/web-marker"
 import { VerticalResizer } from './verticalResizer'
 import { useViewerStore } from './store/viewer'
+import { Toolbar } from './components/toolbar'
 
 export function Viewer() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -112,6 +113,9 @@ export function Viewer() {
         onStart={handleVerticalSizeStart}
         onEnd={handleVerticalSizeEnd}
       />
+      <div className='mhtml-plugin__toolbar-wrap'>
+        <Toolbar/>
+      </div>
     </main>
   )
 }

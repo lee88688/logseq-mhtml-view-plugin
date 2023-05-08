@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { createPortal } from 'react-dom'
-import { Editor } from "./editor";
 import { Viewer } from "./viewer";
 import { useViewerStore } from "./store/viewer";
 import { MHTML_CONTAINER_ID } from "./constant";
@@ -12,8 +11,7 @@ function App() {
 
   useEffect(() => {
     if (visible) {
-      let div: HTMLElement | null | undefined
-      div = window.top?.document.getElementById(MHTML_CONTAINER_ID)
+      const div = window.top?.document.getElementById(MHTML_CONTAINER_ID)
       div && setPortalEl(div)
     }
   }, [visible])
