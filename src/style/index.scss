@@ -4,6 +4,10 @@
 
 
 .mhtml-plugin {
+  &__viewer {
+    @apply container grow h-screen absolute left-0 top-0;
+  }
+
   &__toolbar {
     @apply flex flex-row backdrop-blur-sm p-2;
 
@@ -22,6 +26,10 @@
 
   &__editor {
     @apply w-52 h-16 flex flex-col rounded-lg overflow-hidden shadow-lg bg-gray-100;
+
+    &-wrap {
+      @apply absolute left-0 top-0;
+    }
 
     &-style {
       @apply h-1/2 flex flex-row items-center justify-between;

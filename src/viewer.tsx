@@ -1,13 +1,25 @@
-import React, { useRef, useEffect, useState, useCallback, useDeferredValue } from 'react'
+import React, {useRef, useEffect, useState, useCallback, useDeferredValue, useMemo} from 'react'
 import {Marker} from "@notelix/web-marker"
 import { VerticalResizer } from './verticalResizer'
 import { useViewerStore } from './store/viewer'
 import { Toolbar } from './components/toolbar'
+import {Editor} from "./editor";
 
 export function Viewer() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
   const [isVerticalChange, setIsVerticalChange] = useState(false)
+
+  const [editorVisible, setEditorVisible] = useState(false)
+  const [editorPos, setEditorPos] = useState({ left: 0, top: 0 })
+  
+  const editorStyle = useMemo(() => {
+    return {
+      display: editorVisible ? 'block' : 'none',
+      left: `${editorPos.left}px`,
+      top: `${editorPos.top}px`,
+    }
+  }, [editorPos, editorVisible])
 
   const markerRef = useRef<Marker>()
 
@@ -19,6 +31,22 @@ export function Viewer() {
   const createParser = useViewerStore(state => state.createParser)
 
   const mhtml = useDeferredValue(useViewerStore(state => state.content))
+
+  const setEditorPosition = useCallback((range: Range) => {
+    if (!iframeRef.current) return
+    if (!range.toString()) {
+      setEditorVisible(false)
+      return
+    }
+    const iframeRect = iframeRef.current.getBoundingClientRect()
+    const pos = range.getBoundingClientRect()
+
+    setEditorPos({
+      left: iframeRect.left + pos.left,
+      top: iframeRect.top + pos.top + pos.height,
+    })
+    setEditorVisible(true)
+  }, [])
 
   useEffect(() => {
     const createProcess = createParser(mhtml)
@@ -45,6 +73,7 @@ export function Viewer() {
           eventHandler: {},
           highlightPainter: {
             paintHighlight: (context, element) => {
+              console.log('paintHL', context, element)
               element.style.textDecoration = "underline";
               element.style.textDecorationColor = "#f6b80b";
               if (context.serializedRange.annotation) {
@@ -69,10 +98,10 @@ export function Viewer() {
           const selection = contentWindow.getSelection();
           if (!selection) return;
           const range = selection.getRangeAt(0);
-          // this will always be null, because of web-marker's bug
-          const serialized = markerRef.current.serializeRange(range)
-          markerRef.current.paint(serialized)
-          Marker.clearSelection()
+          setEditorPosition(range)
+          // const serialized = markerRef.current.serializeRange(range)
+          // markerRef.current.paint(serialized)
+          // Marker.clearSelection()
         }
   
         contentWindow.addEventListener('mouseup', mouseup)
@@ -89,7 +118,7 @@ export function Viewer() {
         removeCallback?.()
       }
     }
-  }, [iframeUrl])
+  }, [iframeUrl, setEditorPosition])
 
   const handleVerticalSizeChange = useViewerStore(state => state.setViewerWidth)
 
@@ -99,7 +128,7 @@ export function Viewer() {
   return (
     <main
       id="mhtml-layout"
-      className='container grow h-screen absolute left-0 top-0'
+      className='mhtml-plugin__viewer'
       style={{ width: 'var(--mhtml-view-container-width, 50vw)'}}
     >
       <iframe 
@@ -114,6 +143,9 @@ export function Viewer() {
       />
       <div className='mhtml-plugin__toolbar-wrap'>
         <Toolbar/>
+      </div>
+      <div style={editorStyle} className='mhtml-plugin__editor-wrap'>
+        <Editor />
       </div>
     </main>
   )
