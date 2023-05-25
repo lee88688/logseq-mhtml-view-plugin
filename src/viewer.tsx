@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState, useCallback, useDeferredValue } from 'react'
-import Parser from '@monsterlee/fast-mhtml'
 import {Marker} from "@notelix/web-marker"
 import { VerticalResizer } from './verticalResizer'
 import { useViewerStore } from './store/viewer'
@@ -22,10 +21,10 @@ export function Viewer() {
   const mhtml = useDeferredValue(useViewerStore(state => state.content))
 
   useEffect(() => {
-    const createProces = createParser(mhtml)
+    const createProcess = createParser(mhtml)
 
     return () => {
-      createProces.then(parser => {
+      createProcess.then(parser => {
         if (!parser) return
 
         for (const part of parser.parts) {
