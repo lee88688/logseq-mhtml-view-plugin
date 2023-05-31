@@ -2,6 +2,7 @@ import Parser from '@monsterlee/fast-mhtml'
 import { create } from 'zustand'
 import {Marker} from "@notelix/web-marker"
 import { FileType } from '../constant';
+import { HighlightColor } from '../editor';
 
 interface SerializedRange {
   uid: string;
@@ -12,6 +13,8 @@ interface SerializedRange {
 
 interface Mark {
   id: string;
+  color: HighlightColor;
+  underline: boolean;
   comment: string;
   position: SerializedRange;
 }
@@ -34,6 +37,7 @@ interface ViewerState {
   setViewerWidth: (left: number) => void;
   createParser: (mhtml?: string | ArrayBuffer) => Promise<Parser | undefined>;
   openFile: (fileName: string, content: string | ArrayBuffer) => Promise<void>;
+  getMark(id: string): Mark | undefined;
 }
 
 export const useViewerStore = create<ViewerState>()((set, get) => ({
@@ -89,6 +93,10 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
   updateMark(mark: Mark) {
     const marks = get().marks
     set({ marks: marks.map(item => item.id === mark.id ? mark : item )})
+  },
+  getMark(id: string) {
+    const marks = get().marks
+    return marks.find(item => item.id === id)
   },
   async openFile(fileName: string, content: string | ArrayBuffer) {
     set({ fileName, content, visible: true })

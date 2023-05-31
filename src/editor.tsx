@@ -24,7 +24,7 @@ export const ColorMap: Record<HighlightColor, string> = {
 }
 
 export type EditorContent = {
-  color: HighlightColor;
+  color?: HighlightColor;
   isUnderline: boolean;
   comment?: string;
 }
@@ -46,7 +46,7 @@ export function Editor(props: EditorProps) {
     <div className='mhtml-plugin__editor'>
       <div className='mhtml-plugin__editor-style'>
         <div className='mhtml-plugin__editor-color-wrap'>
-          <ColorButton/>
+          <ColorButton active={!props.color}/>
           <ColorButton active={props.color === HighlightColor.Yellow} color={HighlightColor.Yellow} onClick={handleColorChange}/>
           <ColorButton active={props.color === HighlightColor.Red} color={HighlightColor.Red} onClick={handleColorChange}/>
           <ColorButton active={props.color === HighlightColor.Pink} color={HighlightColor.Pink} onClick={handleColorChange}/>

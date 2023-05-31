@@ -3,7 +3,7 @@ import {Marker} from "@notelix/web-marker"
 import { VerticalResizer } from './verticalResizer'
 import { useViewerStore } from './store/viewer'
 import { Toolbar } from './components/toolbar'
-import {Editor} from "./editor";
+import {ColorMap, Editor} from "./editor";
 
 export function Viewer() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -72,14 +72,20 @@ export function Viewer() {
           rootElement: contentWindow.document.body,
           eventHandler: {},
           highlightPainter: {
-            paintHighlight: (context, element) => {
+            paintHighlight: (context, element: HTMLElement) => {
               console.log('paintHL', context, element)
-              element.style.textDecoration = "underline";
-              element.style.textDecorationColor = "#f6b80b";
-              if (context.serializedRange.annotation) {
-                element.style.backgroundColor = "rgba(246,184,11, 0.3)";
+              const getMark = useViewerStore.getState().getMark;
+              const mark = getMark(context.serializedRange.uid);
+              if (!mark) return;
+
+              const color = ColorMap[mark.color]
+              if (mark.underline) {
+                element.style.textDecoration = "underline";
+                element.style.textDecorationColor = color;
+                element.style.backgroundColor = 'initial'
               } else {
-                element.style.backgroundColor = "initial";
+                element.style.textDecoration = 'initial'
+                element.style.backgroundColor = color;
               }
             }
           }
