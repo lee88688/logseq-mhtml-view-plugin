@@ -1,7 +1,7 @@
 import { LSPluginUserEvents } from "@logseq/libs/dist/LSPlugin.user";
 import {BlockCommandCallback} from '@logseq/libs/dist/LSPlugin'
 import React from "react";
-import { useViewerStore } from "./store/viewer";
+import {Mark, useViewerStore} from "./store/viewer";
 import { MHTML_CONTAINER_ID } from "./constant";
 
 interface LogseqModelEvent {
@@ -32,6 +32,7 @@ export const useAppVisible = () => {
   return React.useSyncExternalStore(subscribeToUIVisible, () => _visible);
 };
 
+
 function isValidFileName(name: string) {
   return /\.(mhtml|html)/i.test(name)
 }
@@ -56,6 +57,9 @@ export const importFile: BlockCommandCallback = async (event) => {
       }
       const content = await file.text()
       await storage.setItem(fileName, content)
+      const name = fileName.split('.')[0]
+      await storage.setItem(`${name}.json`, JSON.stringify({ pageName: `${name}`, marks: [] }))
+      await logseq.Editor.createPage(name)
       await logseq.Editor.insertAtEditingCursor(`{{renderer :mhtml, ${fileName}}}`)
       resolve()
     })
@@ -75,6 +79,12 @@ export async function openMhtmlFile(e: LogseqModelEvent) {
 
   const content = await storage.getItem(fileName)
   if (!content) return
+
+  const name = fileName.split('.')[0]
+  const configContent = await storage.getItem(`${name}.json`)
+  if (!configContent) return
+  const config = JSON.parse(configContent)
+  useViewerStore.setState({ pageName: config.pageName, marks: config.marks })
   
   useViewerStore.getState().openFile(fileName, content)
 }

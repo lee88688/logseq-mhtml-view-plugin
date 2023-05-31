@@ -4,14 +4,14 @@ import {Marker} from "@notelix/web-marker"
 import { FileType } from '../constant';
 import { HighlightColor } from '../editor';
 
-interface SerializedRange {
+export interface SerializedRange {
   uid: string;
   textBefore: string;
   text: string;
   textAfter: string;
 }
 
-interface Mark {
+export interface Mark {
   id: string;
   color: HighlightColor;
   underline: boolean;
@@ -33,11 +33,15 @@ interface ViewerState {
   marks: Mark[];
   parser?: Parser;
   marker?: Marker;
+  pageName: string;
 
   setViewerWidth: (left: number) => void;
   createParser: (mhtml?: string | ArrayBuffer) => Promise<Parser | undefined>;
   openFile: (fileName: string, content: string | ArrayBuffer) => Promise<void>;
   getMark(id: string): Mark | undefined;
+  addMark: (mark: Mark) => void;
+  removeMark: (mark: Mark) => void;
+  updateMark: (mark: Mark) => void;
 }
 
 export const useViewerStore = create<ViewerState>()((set, get) => ({
@@ -48,6 +52,7 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
     width: '50vw',
   },
   fileName: '',
+  pageName: '',
   marks: [],
 
   setViewerWidth(left: number) {

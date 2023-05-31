@@ -1,9 +1,9 @@
-import React, {useRef, useEffect, useState, useCallback, useDeferredValue, useMemo} from 'react'
+import React, {useCallback, useDeferredValue, useEffect, useMemo, useRef, useState} from 'react'
 import {Marker} from "@notelix/web-marker"
-import { VerticalResizer } from './verticalResizer'
-import { useViewerStore } from './store/viewer'
-import { Toolbar } from './components/toolbar'
-import {ColorMap, Editor} from "./editor";
+import {VerticalResizer} from './verticalResizer'
+import {Mark, SerializedRange, useViewerStore} from './store/viewer'
+import {Toolbar} from './components/toolbar'
+import {ColorMap, Editor, EditorContent, HighlightColor} from "./editor";
 
 export function Viewer() {
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -12,7 +12,11 @@ export function Viewer() {
 
   const [editorVisible, setEditorVisible] = useState(false)
   const [editorPos, setEditorPos] = useState({ left: 0, top: 0 })
-  
+  const [selected, setSelected] = useState('')
+  const [curPosition, setCurPosition] = useState<SerializedRange>()
+
+  const mark = useViewerStore(state => state.marks.find(item => item.id === selected))
+
   const editorStyle = useMemo(() => {
     return {
       display: editorVisible ? 'block' : 'none',
@@ -46,6 +50,7 @@ export function Viewer() {
       top: iframeRect.top + pos.top + pos.height,
     })
     setEditorVisible(true)
+    setCurPosition(markerRef.current.serializeRange(range))
   }, [])
 
   useEffect(() => {
@@ -125,6 +130,34 @@ export function Viewer() {
       }
     }
   }, [iframeUrl, setEditorPosition])
+  
+  const handleEditorChange = useCallback(async (content: EditorContent) => {
+    if (!mark) {
+      const pageName = useViewerStore.getState().pageName
+      if (!curPosition || !pageName) return;
+      // create new mark
+      const mark: Mark = {
+        id: '',
+        color: content.color ?? HighlightColor.Yellow,
+        underline: content.isUnderline ?? false,
+        comment: content.comment ?? '',
+        position: curPosition,
+      }
+
+      // create logseq block
+      // fixme add comment and id properties
+      const block = await logseq.Editor.appendBlockInPage(pageName, curPosition.text)
+      if (!block) return
+      mark.id = block.uuid
+      mark.position.uid = block.uuid
+
+      useViewerStore.getState().addMark(mark)
+    } else if (content.color === HighlightColor.None) {
+      // todo remove mark
+    } else {
+      useViewerStore.getState().updateMark({ ...mark, ...content })
+    }
+  }, [curPosition, mark])
 
   const handleVerticalSizeChange = useViewerStore(state => state.setViewerWidth)
 
@@ -151,7 +184,7 @@ export function Viewer() {
         <Toolbar/>
       </div>
       <div style={editorStyle} className='mhtml-plugin__editor-wrap'>
-        <Editor />
+        <Editor color={mark?.color} isUnderline={mark?.underline} comment={mark?.comment} onChange={handleEditorChange} />
       </div>
     </main>
   )

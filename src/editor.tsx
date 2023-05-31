@@ -25,7 +25,7 @@ export const ColorMap: Record<HighlightColor, string> = {
 
 export type EditorContent = {
   color?: HighlightColor;
-  isUnderline: boolean;
+  isUnderline?: boolean;
   comment?: string;
 }
 
@@ -36,11 +36,11 @@ export type EditorProps = EditorContent & {
 export function Editor(props: EditorProps) {
 
   const handleColorChange = (color: HighlightColor) =>
-    props.onChange?.({ color, isUnderline: props.isUnderline, comment: props.comment })
+    props.onChange?.({ color })
   const handleUnderlineChange = () =>
-    props.onChange?.({ color: props.color, isUnderline: !props.isUnderline, comment: props.comment })
+    props.onChange?.({ isUnderline: !props.isUnderline, })
   const handleCommentChange = (e: React.FormEvent<HTMLInputElement>) =>
-    props.onChange?.({ color: props.color, isUnderline: props.isUnderline, comment: (e.nativeEvent as InputEvent).data ?? '' })
+    props.onChange?.({ comment: (e.nativeEvent as InputEvent).data ?? '' })
 
   return (
     <div className='mhtml-plugin__editor'>
@@ -94,7 +94,7 @@ function ColorButton({ color = HighlightColor.None, active = false, onClick }: C
   return <div style={{ backgroundColor }} className={clsx('mhtml-plugin__editor-color', active && activeClass)} onClick={handleClick}/>
 }
 
-function Underline({ active = false, color = HighlightColor.None }) {
+function Underline({ active = false, color = HighlightColor.None }: { active?: boolean, color?: HighlightColor}) {
   const fillColor = active && color ? ColorMap[color] : `rgb(209 213 219)`
   return (
     <svg style={{ fill: fillColor }} className='mhtml-plugin__editor-underline' viewBox="0 0 1024 1024">
