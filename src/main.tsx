@@ -1,19 +1,19 @@
-import "@logseq/libs";
+import '@logseq/libs'
 
-import React from "react";
-import * as ReactDOM from "react-dom/client";
-import App from "./App";
-import "./style/index.scss";
+import React from 'react'
+import * as ReactDOM from 'react-dom/client'
+import App from './App'
+import './style/index.scss'
 import provideStyle from './style/provide.scss?inline'
 
-import { logseq as PL } from "../package.json";
-import { importFile, openMhtmlFile, startSetup } from "./utils";
-import { useViewerStore } from "./store/viewer";
+import { logseq as PL } from '../package.json'
+import { importFile, openMhtmlFile, startSetup } from './utils'
+import { useViewerStore } from './store/viewer'
 
 // @ts-expect-error
-const css = (t, ...args) => String.raw(t, ...args);
+const css = (t, ...args) => String.raw(t, ...args)
 
-const pluginId = PL.id;
+const pluginId = PL.id
 
 function main() {
   // create portal element in logseq
@@ -24,14 +24,12 @@ function main() {
   // - block renderer
 
   console.log(import.meta.env.VITE_IS_MOCK)
-  console.log(import.meta.env.DEV)
-  console.log(import.meta.env.MODE)
 
   if (!import.meta.env.VITE_IS_MOCK) {
     const createModel = () => {
       return {
-        openMhtmlFile,
-      };
+        openMhtmlFile
+      }
     }
 
     logseq.Editor.registerSlashCommand('import mhtml', importFile)
@@ -47,34 +45,35 @@ function main() {
         template: `<a data-filename="${fileName}" data-on-click="openMhtmlFile">${fileName}</a>`
       })
     })
-  
-    logseq.provideModel(createModel());
-    logseq.setMainUIInlineStyle({
-      zIndex: 11,
-    });
 
-    const openIconName = "mthml";
-  
-    logseq.provideStyle(css`
-      .${openIconName} {
-        opacity: 0.55;
-        font-size: 20px;
-        margin-top: 4px;
-      }
-  
-      .${openIconName}:hover {
-        opacity: 0.9;
-      }
-    `);
+    logseq.provideModel(createModel())
+    logseq.setMainUIInlineStyle({
+      zIndex: 100
+    })
 
     logseq.provideStyle(provideStyle)
-  
-    logseq.App.registerUIItem("toolbar", {
-      key: openIconName,
-      template: `
-        <div data-on-click="show" class="${openIconName}">⚙️</div>
-      `,
-    });
+
+    // const openIconName = 'mthml'
+    //
+    // logseq.provideStyle(css`
+    //   .${openIconName} {
+    //     opacity: 0.55;
+    //     font-size: 20px;
+    //     margin-top: 4px;
+    //   }
+    //
+    //   .${openIconName}:hover {
+    //     opacity: 0.9;
+    //   }
+    // `)
+    //
+    //
+    // logseq.App.registerUIItem('toolbar', {
+    //   key: openIconName,
+    //   template: `
+    //     <div data-on-click="show" class="${openIconName}">⚙️</div>
+    //   `
+    // })
 
     startSetup()
   } else {
@@ -84,13 +83,13 @@ function main() {
     useViewerStore.setState({ visible: true })
   }
 
-  const root = ReactDOM.createRoot(document.getElementById("app")!);
+  const root = ReactDOM.createRoot(document.getElementById('app')!)
 
   root.render(
     <React.StrictMode>
       <App />
     </React.StrictMode>
-  );
+  )
 }
 
 if (import.meta.env.VITE_IS_MOCK) {

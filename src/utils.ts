@@ -1,37 +1,46 @@
-import { LSPluginUserEvents } from "@logseq/libs/dist/LSPlugin.user";
-import {BlockCommandCallback} from '@logseq/libs/dist/LSPlugin'
-import React from "react";
-import {Mark, useViewerStore} from "./store/viewer";
-import { MHTML_CONTAINER_ID } from "./constant";
+import { LSPluginUserEvents } from '@logseq/libs/dist/LSPlugin.user'
+import { BlockCommandCallback } from '@logseq/libs/dist/LSPlugin'
+import React from 'react'
+import { Mark, useViewerStore } from './store/viewer'
+import { LOGSEQ_APP_CONTAINER_ID, MHTML_CONTAINER_ID } from './constant'
 
 interface LogseqModelEvent {
-  id: string;
-  type: string;
+  id: string
+  type: string
   dataset: Record<string, string>
 }
 
-let _visible = logseq.isMainUIVisible;
+let _visible = logseq.isMainUIVisible
 
 function subscribeLogseqEvent<T extends LSPluginUserEvents>(
   eventName: T,
   handler: (...args: any) => void
 ) {
-  logseq.on(eventName, handler);
+  logseq.on(eventName, handler)
   return () => {
-    logseq.off(eventName, handler);
-  };
+    logseq.off(eventName, handler)
+  }
 }
 
 const subscribeToUIVisible = (onChange: () => void) =>
-  subscribeLogseqEvent("ui:visible:changed", ({ visible }) => {
-    _visible = visible;
-    onChange();
-  });
+  subscribeLogseqEvent('ui:visible:changed', ({ visible }) => {
+    _visible = visible
+    onChange()
+  })
 
 export const useAppVisible = () => {
-  return React.useSyncExternalStore(subscribeToUIVisible, () => _visible);
-};
+  return React.useSyncExternalStore(subscribeToUIVisible, () => _visible)
+}
 
+function getPersistStr(pageName: string, marks: Mark[]) {
+  return JSON.stringify({ pageName, marks })
+}
+
+export function persistToStorage(pageName: string, marks: Mark[]) {
+  const content = getPersistStr(pageName, marks)
+  const storage = logseq.Assets.makeSandboxStorage()
+  return storage.setItem(`${pageName}.json`, content)
+}
 
 function isValidFileName(name: string) {
   return /\.(mhtml|html)/i.test(name)
@@ -58,9 +67,11 @@ export const importFile: BlockCommandCallback = async (event) => {
       const content = await file.text()
       await storage.setItem(fileName, content)
       const name = fileName.split('.')[0]
-      await storage.setItem(`${name}.json`, JSON.stringify({ pageName: `${name}`, marks: [] }))
-      await logseq.Editor.createPage(name)
-      await logseq.Editor.insertAtEditingCursor(`{{renderer :mhtml, ${fileName}}}`)
+      await storage.setItem(`${name}.json`, getPersistStr(name, []))
+      await logseq.Editor.createPage(name, {}, { redirect: false })
+      await logseq.Editor.insertAtEditingCursor(
+        `{{renderer :mhtml, ${fileName}}}`
+      )
       resolve()
     })
     // todo: when user not select file will reject too.
@@ -85,8 +96,23 @@ export async function openMhtmlFile(e: LogseqModelEvent) {
   if (!configContent) return
   const config = JSON.parse(configContent)
   useViewerStore.setState({ pageName: config.pageName, marks: config.marks })
-  
+
+  // change app container view
+  const top = window.top
+  const element = top?.document.getElementById(LOGSEQ_APP_CONTAINER_ID)
+  if (!element) return
+  element.style.marginLeft = `var(--mhtml-view-container-width, 50vw)`
+  logseq.App.setLeftSidebarVisible(false)
+  logseq.App.setRightSidebarVisible(false)
+
   useViewerStore.getState().openFile(fileName, content)
+}
+
+export async function closeMhtmlFile() {
+  const top = window.top
+  const element = top?.document.getElementById(LOGSEQ_APP_CONTAINER_ID)
+  element?.style.removeProperty('margin-left')
+  useViewerStore.setState({ visible: false })
 }
 
 export async function startSetup() {
@@ -100,6 +126,6 @@ export async function startSetup() {
   const div = top.document.createElement('div')
   div.id = MHTML_CONTAINER_ID
 
-  const appContainer = top.document.getElementById('app-container')
+  const appContainer = top.document.getElementById(LOGSEQ_APP_CONTAINER_ID)
   appContainer?.appendChild(div)
 }

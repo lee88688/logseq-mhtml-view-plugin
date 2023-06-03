@@ -1,3 +1,74 @@
 .mhtml-plugin__vertical-resizer {
   @apply absolute h-screen cursor-col-resize w-0.5 right-0 top-0
 }
+
+
+.mhtml-plugin {
+  &__viewer {
+    @apply container grow h-screen fixed left-0 top-0;
+
+    iframe {
+      @apply w-full h-full m-0;
+    }
+  }
+
+  &__toolbar {
+    @apply flex flex-row backdrop-blur-sm p-2;
+
+    &-item {
+      @apply p-1 mx-2 cursor-pointer flex justify-center items-center;
+
+      &.is-active {
+        @apply border-b-2;
+      }
+    }
+  }
+
+  &__toolbar-wrap {
+    @apply absolute top-0 right-0;
+  }
+
+  &__editor {
+    @apply w-52 h-16 flex flex-col rounded-lg overflow-hidden shadow-lg bg-gray-100;
+
+    &-wrap {
+      @apply absolute left-0 top-0;
+    }
+
+    &-style {
+      @apply h-1/2 flex flex-row items-center justify-between;
+    }
+
+    &-color-wrap {
+      @apply h-full flex flex-row items-center;
+    }
+
+    &-underline-wrap {
+      @apply h-full p-1.5 flex justify-center items-center border-l text-base cursor-pointer;
+    }
+
+    &-input-wrap {
+      @apply h-1/2 border-t;
+    }
+
+    &-input {
+      @apply block h-full w-full outline-none p-1 border-none focus:ring-0;
+    }
+
+    &-color {
+      @apply w-4 h-4 mx-1 rounded-full cursor-pointer hover:ring-2;
+
+      &.is-active {
+        @apply ring-2;
+      }
+
+      &-none {
+        @apply w-4 h-4 mx-1 rounded-full border border-gray-400 border-dashed cursor-pointer;
+      }
+    }
+
+    &-underline {
+      @apply h-full w-full;
+    }
+  }
+}
