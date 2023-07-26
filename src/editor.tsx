@@ -38,8 +38,8 @@ export function Editor(props: EditorProps) {
     props.onChange?.({ color })
   const handleUnderlineChange = () =>
     props.onChange?.({ underline: !props.underline })
-  const handleCommentChange = (e: React.FormEvent<HTMLInputElement>) =>
-    props.onChange?.({ comment: (e.target as HTMLInputElement).value ?? '' })
+  // const handleCommentChange = (e: React.FormEvent<HTMLInputElement>) =>
+  //   props.onChange?.({ comment: (e.target as HTMLInputElement).value ?? '' })
 
   return (
     <div className="mhtml-plugin__editor">
@@ -88,14 +88,14 @@ export function Editor(props: EditorProps) {
           <Underline active={props.underline} color={props.color} />
         </div>
       </div>
-      <div className="mhtml-plugin__editor-input-wrap">
+      {/* <div className="mhtml-plugin__editor-input-wrap">
         <input
           type="text"
           value={props.comment}
           className="mhtml-plugin__editor-input"
           onInput={handleCommentChange}
         />
-      </div>
+      </div> */}
     </div>
   )
 }
