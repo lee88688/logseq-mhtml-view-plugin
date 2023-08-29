@@ -3,6 +3,7 @@ import { BlockCommandCallback } from '@logseq/libs/dist/LSPlugin'
 import React from 'react'
 import { Mark, useViewerStore } from './store/viewer'
 import { LOGSEQ_APP_CONTAINER_ID, MHTML_CONTAINER_ID } from './constant'
+import { logseq as PL } from '../package.json'
 
 interface LogseqModelEvent {
   id: string
@@ -79,7 +80,7 @@ export const importFile: BlockCommandCallback = async (event) => {
       const pageName = getPageName(name)
 
       await storage.setItem(`${name}.json`, getPersistStr(pageName, []))
-      await logseq.Editor.createPage(pageName, {}, { redirect: false })
+      await logseq.Editor.createPage(pageName, { file: `[fileName](../assets/storages/${PL.id}/${fileName})` }, { redirect: false })
       await logseq.Editor.insertAtEditingCursor(
         `{{renderer :mhtml, ${fileName}}}`
       )
