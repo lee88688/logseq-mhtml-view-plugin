@@ -52,7 +52,7 @@ export function Viewer() {
 
   const iframeUrl = useViewerStore((state) => {
     const parser = state.parser
-    return parser && parser.parts && parser.parts[0].rewriteLocation
+    return parser?.getUrl()
   })
 
   const createParser = useViewerStore((state) => state.createParser)
@@ -74,15 +74,13 @@ export function Viewer() {
   }, [])
 
   useEffect(() => {
-    const createProcess = createParser(mhtml)
+    const createProcess = createParser()
 
     return () => {
       createProcess.then((parser) => {
         if (!parser) return
 
-        for (const part of parser.parts) {
-          part.rewriteLocation && URL.revokeObjectURL(part.rewriteLocation)
-        }
+        parser.destroy()
       })
     }
   }, [createParser, mhtml])

@@ -1,9 +1,9 @@
-import Parser from '@monsterlee/fast-mhtml'
 import { create } from 'zustand'
 import { Marker } from '@notelix/web-marker'
 import { FileType } from '../constant'
 import { EditorContent, HighlightColor } from '../editor'
 import { closeMhtmlFile, persistToStorage } from '../utils'
+import { createHtmlParser, createMhtmlParser, Parser } from '../parser'
 
 export interface SerializedRange {
   uid: string
@@ -84,31 +84,25 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
   isHighlightActive() {
     return get().viewerSetting.highlightMode
   },
-  async createParser(mhtml?: string | ArrayBuffer) {
-    if (!mhtml) return
+  async createParser() {
+    const content = get().content
+    if (!content) return
 
-    const parser = new Parser({
-      rewriteFn(url: string, part: any) {
-        const blob = new Blob([part.body], { type: part.type })
-        ;(part as any)._blob = blob
-        return URL.createObjectURL(blob)
-      }
-    })
+    let parser: Parser
 
-    return new Promise<Parser | undefined>((resolve, reject) => {
-      setTimeout(() => {
-        try {
-          parser.parse(mhtml as any)
-          parser.rewrite()
-        } catch (e) {
-          reject(e)
-          return
-        }
+    switch (get().type) {
+      case FileType.MHTML:
+        parser = await createMhtmlParser(content)
+        break
 
-        set({ parser })
-        resolve(parser)
-      })
-    })
+      case FileType.HTML:
+        parser = await createHtmlParser(content)
+        break
+    }
+
+    set({ parser })
+
+    return parser
   },
   async addMark(mark: Mark) {
     const { pageName, marks } = get()
@@ -159,7 +153,12 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
     return marks.find((item) => item.id === id)
   },
   async openFile(fileName: string, content: string | ArrayBuffer) {
-    set({ fileName, content, visible: true })
+    let type = FileType.HTML
+    if (/.mhtml$/i.test(fileName)) {
+      type = FileType.MHTML
+    }
+
+    set({ fileName, content, visible: true, type })
   },
   close() {
     set({ viewerSetting: { ...get().viewerSetting, highlightMode: false } })
