@@ -46,6 +46,11 @@ function isValidFileName(name: string) {
   return /\.(mhtml|html)/i.test(name)
 }
 
+// name is file name without extension
+function getPageName(name: string) {
+  return `mhtml/${name}`
+}
+
 export const importFile: BlockCommandCallback = async (event) => {
   const storage = logseq.Assets.makeSandboxStorage()
   const input = document.createElement('input')
@@ -66,9 +71,15 @@ export const importFile: BlockCommandCallback = async (event) => {
       }
       const content = await file.text()
       await storage.setItem(fileName, content)
+
+      // fileName -> fileName.mthml
+      // name -> fileName
+      // pageName -> mhtml/fileName
       const name = fileName.split('.')[0]
-      await storage.setItem(`${name}.json`, getPersistStr(name, []))
-      await logseq.Editor.createPage(name, {}, { redirect: false })
+      const pageName = getPageName(name)
+
+      await storage.setItem(`${name}.json`, getPersistStr(pageName, []))
+      await logseq.Editor.createPage(pageName, {}, { redirect: false })
       await logseq.Editor.insertAtEditingCursor(
         `{{renderer :mhtml, ${fileName}}}`
       )
@@ -119,7 +130,7 @@ export async function startSetup() {
   // create anchor element
   const top = window.top
   if (!top) {
-    // todo: show error
+    logseq.UI.showMsg('mhtml plugin start failed!', 'error')
     return
   }
 
