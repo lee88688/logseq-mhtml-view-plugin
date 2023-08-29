@@ -46,6 +46,7 @@ export function createHtmlParser(html: string | ArrayBuffer) {
   const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }))
 
   const parser: Parser = {
+    parser: null,
     destroy: () => {
       URL.revokeObjectURL(url)
     },
