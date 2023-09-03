@@ -33,9 +33,9 @@ interface ViewerState {
   viewerSetting: ViewerSetting
   fileName: string
   marks: Mark[]
+  pageName: string
   parser?: Parser
   marker?: Marker
-  pageName: string
 
   setViewerWidth: (left: number) => void
   toggleHighlightMode: () => void
@@ -145,8 +145,9 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
   },
   persistConfig() {
     // persist pageName and marks to file
-    const { pageName, marks } = get()
-    return persistToStorage(pageName, marks)
+    const { fileName, marks } = get()
+    const name = fileName.split('.')[0]
+    return persistToStorage(name, marks)
   },
   getMark(id: string) {
     const marks = get().marks

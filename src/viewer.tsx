@@ -9,7 +9,7 @@ import React, {
 import { Marker } from '@notelix/web-marker'
 import { VerticalResizer } from './verticalResizer'
 import { Mark, SerializedRange, useViewerStore } from './store/viewer'
-import { Toolbar, ToolbarItemType } from './components/toolbar'
+import { Toolbar } from './components/toolbar'
 import { ColorMap, Editor, EditorContent, HighlightColor } from './editor'
 
 const EDITOR_HEIGHT = 64
@@ -129,8 +129,6 @@ export function Viewer() {
             }
           }
         })
-
-        console.log(markerRef)
 
         markerRef.current.addEventListeners()
 

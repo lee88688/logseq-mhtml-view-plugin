@@ -23,8 +23,6 @@ function main() {
   // - register macros
   // - block renderer
 
-  console.log(import.meta.env.VITE_IS_MOCK)
-
   if (!import.meta.env.VITE_IS_MOCK) {
     const createModel = () => {
       return {
@@ -32,7 +30,7 @@ function main() {
       }
     }
 
-    logseq.Editor.registerSlashCommand('import mhtml', importFile)
+    logseq.Editor.registerSlashCommand('import mhtml/html', importFile)
 
     logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
       const [type, fileName] = payload.arguments
@@ -42,7 +40,8 @@ function main() {
       return logseq.provideUI({
         key: fileName,
         slot,
-        template: `<a data-filename="${fileName}" data-on-click="openMhtmlFile">${fileName}</a>`
+        template: `<a data-filename="${fileName}" data-on-click="openMhtmlFile">${fileName}</a>`,
+        reset: true
       })
     })
 
@@ -52,28 +51,6 @@ function main() {
     })
 
     logseq.provideStyle(provideStyle)
-
-    // const openIconName = 'mthml'
-    //
-    // logseq.provideStyle(css`
-    //   .${openIconName} {
-    //     opacity: 0.55;
-    //     font-size: 20px;
-    //     margin-top: 4px;
-    //   }
-    //
-    //   .${openIconName}:hover {
-    //     opacity: 0.9;
-    //   }
-    // `)
-    //
-    //
-    // logseq.App.registerUIItem('toolbar', {
-    //   key: openIconName,
-    //   template: `
-    //     <div data-on-click="show" class="${openIconName}">⚙️</div>
-    //   `
-    // })
 
     startSetup()
   } else {

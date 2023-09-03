@@ -37,10 +37,14 @@ function getPersistStr(pageName: string, marks: Mark[]) {
   return JSON.stringify({ pageName, marks })
 }
 
-export function persistToStorage(pageName: string, marks: Mark[]) {
-  const content = getPersistStr(pageName, marks)
+/**
+ * @param name html/mhtml name without extension
+ * @param marks
+ */
+export function persistToStorage(name: string, marks: Mark[]) {
+  const content = getPersistStr(name, marks)
   const storage = logseq.Assets.makeSandboxStorage()
-  return storage.setItem(`${pageName}.json`, content)
+  return storage.setItem(`${name}.json`, content)
 }
 
 function isValidFileName(name: string) {
@@ -80,7 +84,11 @@ export const importFile: BlockCommandCallback = async (event) => {
       const pageName = getPageName(name)
 
       await storage.setItem(`${name}.json`, getPersistStr(pageName, []))
-      await logseq.Editor.createPage(pageName, { file: `[fileName](../assets/storages/${PL.id}/${fileName})` }, { redirect: false })
+      await logseq.Editor.createPage(
+        pageName,
+        { file: `[fileName](../assets/storages/${PL.id}/${fileName})` },
+        { redirect: false }
+      )
       await logseq.Editor.insertAtEditingCursor(
         `{{renderer :mhtml, ${fileName}}}`
       )
@@ -107,7 +115,11 @@ export async function openMhtmlFile(e: LogseqModelEvent) {
   const configContent = await storage.getItem(`${name}.json`)
   if (!configContent) return
   const config = JSON.parse(configContent)
-  useViewerStore.setState({ pageName: config.pageName, marks: config.marks })
+  useViewerStore.setState({
+    fileName,
+    pageName: config.pageName,
+    marks: config.marks
+  })
 
   // change app container view
   const top = window.top
