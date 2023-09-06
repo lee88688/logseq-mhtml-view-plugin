@@ -1,4 +1,4 @@
-# Logseq MHTML Plugin 🚀
+# Logseq MHTML/HTML View Plugin 🚀
 
 Store and load MHTML or HTML file in Logseq!
 
