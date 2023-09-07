@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/lee88688/logseq-mhtml-view-plugin/compare/v1.0.1...v1.0.2) (2023-09-07)
+
+
+### Bug Fixes
+
+* add license ([f683dd5](https://github.com/lee88688/logseq-mhtml-view-plugin/commit/f683dd533b4f288197f4cdcfeaa8ff57972c432c))
+
 ## [1.0.1](https://github.com/lee88688/logseq-mhtml-view-plugin/compare/v1.0.0...v1.0.1) (2023-09-07)
 
 
