@@ -99,6 +99,7 @@ interface ToolbarItemProps {
   children: React.ReactElement | string
   onClick?: (type: ToolbarItemType) => void
   type: ToolbarItemType
+  title?: string
 }
 
 const ToolbarItem = (props: ToolbarItemProps) => {
@@ -108,6 +109,7 @@ const ToolbarItem = (props: ToolbarItemProps) => {
         'mhtml-plugin__toolbar-item',
         props.isActive ? 'is-active' : ''
       )}
+      title={props.title}
       onClick={() => props.onClick?.(props.type)}
     >
       {props.children}
@@ -135,34 +137,20 @@ export function Toolbar(props: ToolbarProps) {
       <ToolbarItem
         isActive={isHighlightActive}
         type={ToolbarItemType.Highlight}
+        title='highlight mode'
         onClick={toggleHighlightMode}
       >
         <HighlightMode />
       </ToolbarItem>
-      {props.isShowOutline && (
-        <>
-          <ToolbarItem>
-            <ZoomIn />
-          </ToolbarItem>
-          <ToolbarItem>
-            <ZoomOut />
-          </ToolbarItem>
-          <ToolbarItem>
-            <Outline />
-          </ToolbarItem>
-          <ToolbarItem>
-            <Search />
-          </ToolbarItem>
-        </>
-      )}
       <ToolbarItem
         type={ToolbarItemType.Annotation}
+        title='go to annotation page'
         onClick={gotoAnnotationPage}
       >
         <AnnotationPage />
       </ToolbarItem>
       <ToolbarItem type={ToolbarItemType.Close} onClick={close}>
-        关闭
+        Close
       </ToolbarItem>
     </div>
   )

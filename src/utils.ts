@@ -37,18 +37,23 @@ function getPersistStr(pageName: string, marks: Mark[]) {
   return JSON.stringify({ pageName, marks })
 }
 
+function formatFileName(fileName: string) {
+  return fileName.replace(/[\s()[\]<>?/]/g, '')
+}
+
 /**
  * @param name html/mhtml name without extension
  * @param marks
  */
-export function persistToStorage(name: string, marks: Mark[]) {
+export function persistToStorage(fileName: string, marks: Mark[]) {
+  const name = getNameFromFileName(fileName)
   const content = getPersistStr(name, marks)
   const storage = logseq.Assets.makeSandboxStorage()
   return storage.setItem(`${name}.json`, content)
 }
 
 function isValidFileName(name: string) {
-  return /\.(mhtml|html)/i.test(name)
+  return /\.(mhtml|html)$/i.test(name)
 }
 
 // name is file name without extension
@@ -56,7 +61,14 @@ function getPageName(name: string) {
   return `mhtml/${name}`
 }
 
-export const importFile: BlockCommandCallback = async (event) => {
+export function getNameFromFileName(fileName: string) {
+  const matched = fileName.match(/^(.*?)\.(mhtml|html)$/i)!
+
+  const [, name] = matched
+  return name
+}
+
+export const importFile: BlockCommandCallback = async () => {
   const storage = logseq.Assets.makeSandboxStorage()
   const input = document.createElement('input')
   input.type = 'file'
@@ -67,7 +79,7 @@ export const importFile: BlockCommandCallback = async (event) => {
         reject()
         return
       }
-      const fileName = file.name
+      const fileName = formatFileName(file.name)
       const hasFile = await storage.hasItem(fileName)
       if (hasFile) {
         logseq.UI.showMsg('file name already exists!')
@@ -80,13 +92,13 @@ export const importFile: BlockCommandCallback = async (event) => {
       // fileName -> fileName.mthml
       // name -> fileName
       // pageName -> mhtml/fileName
-      const name = fileName.split('.')[0]
+      const name = getNameFromFileName(fileName)
       const pageName = getPageName(name)
 
       await storage.setItem(`${name}.json`, getPersistStr(pageName, []))
       await logseq.Editor.createPage(
         pageName,
-        { file: `[fileName](../assets/storages/${PL.id}/${fileName})` },
+        { file: `[${fileName}](../assets/storages/${PL.id}/${fileName})`, 'file-name': fileName },
         { redirect: false }
       )
       await logseq.Editor.insertAtEditingCursor(
@@ -111,7 +123,7 @@ export async function openMhtmlFile(e: LogseqModelEvent) {
   const content = await storage.getItem(fileName)
   if (!content) return
 
-  const name = fileName.split('.')[0]
+  const name = getNameFromFileName(fileName)
   const configContent = await storage.getItem(`${name}.json`)
   if (!configContent) return
   const config = JSON.parse(configContent)

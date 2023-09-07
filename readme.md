@@ -2,6 +2,12 @@
 
 Store and load MHTML or HTML file in Logseq!
 
+![example](./example.gif)
+
+**NOTE**
+
+for imported file name is used for css id selector, file name imported may be transformed in the proper way.
+
 ## Features
 
 - import MTHML or HTML files

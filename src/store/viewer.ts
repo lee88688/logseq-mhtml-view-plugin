@@ -146,8 +146,7 @@ export const useViewerStore = create<ViewerState>()((set, get) => ({
   persistConfig() {
     // persist pageName and marks to file
     const { fileName, marks } = get()
-    const name = fileName.split('.')[0]
-    return persistToStorage(name, marks)
+    return persistToStorage(fileName, marks)
   },
   getMark(id: string) {
     const marks = get().marks
