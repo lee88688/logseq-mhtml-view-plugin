@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/lee88688/logseq-mhtml-view-plugin/compare/v1.0.0...v1.0.1) (2023-09-07)
+
+
+### Bug Fixes
+
+* file name may invalid when importing file. ([1e95c50](https://github.com/lee88688/logseq-mhtml-view-plugin/commit/1e95c501c93c33d8180ce163c0ebb025ec9de8b4))
+* icon display ([136dc6c](https://github.com/lee88688/logseq-mhtml-view-plugin/commit/136dc6c0cb2f186b29243080f5e73fb22f100fde))
+
 # 1.0.0 (2023-09-06)
 
 
