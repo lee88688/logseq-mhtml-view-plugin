@@ -41,24 +41,25 @@ function formatFileName(fileName: string) {
   return fileName.replace(/[\s()[\]<>?/]/g, '')
 }
 
+// name is file name without extension
+function getPageName(name: string) {
+  return `mhtml/${name}`
+}
+
 /**
  * @param name html/mhtml name without extension
  * @param marks
  */
 export function persistToStorage(fileName: string, marks: Mark[]) {
   const name = getNameFromFileName(fileName)
-  const content = getPersistStr(name, marks)
+  const pageName = getPageName(name)
+  const content = getPersistStr(pageName, marks)
   const storage = logseq.Assets.makeSandboxStorage()
   return storage.setItem(`${name}.json`, content)
 }
 
 function isValidFileName(name: string) {
   return /\.(mhtml|html)$/i.test(name)
-}
-
-// name is file name without extension
-function getPageName(name: string) {
-  return `mhtml/${name}`
 }
 
 export function getNameFromFileName(fileName: string) {
