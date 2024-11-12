@@ -1,3 +1,11 @@
+## [1.0.3](https://github.com/lee88688/logseq-mhtml-view-plugin/compare/v1.0.2...v1.0.3) (2024-11-12)
+
+
+### Bug Fixes
+
+* ci pnpm action error ([e04024e](https://github.com/lee88688/logseq-mhtml-view-plugin/commit/e04024e9be186de86a1cf5bb94712beb6d590019))
+* trigger action ([de76703](https://github.com/lee88688/logseq-mhtml-view-plugin/commit/de76703828df58d06a173abb6c53324b9902c6a0))
+
 ## [1.0.2](https://github.com/lee88688/logseq-mhtml-view-plugin/compare/v1.0.1...v1.0.2) (2023-09-07)
 
 
